@@ -23,7 +23,10 @@ const app = express();
 // Middleware
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://iris-scan-auth.netlify.app', 'https://*.netlify.app']
+    ? [
+        'https://iris-scan-auth.netlify.app',
+        /\.netlify\.app$/
+      ]
     : ['http://localhost:3000', 'http://localhost:5000'],
   credentials: true
 };
