@@ -16,6 +16,7 @@ import { Camera } from '@mediapipe/camera_utils';
 import { registerUser, loginUser } from '../services/api';
 import { extractIrisEmbedding } from '../utils/irisProcessing';
 import audioFeedback from '../utils/audioFeedback';
+import ConfidenceScore from './ConfidenceScore';
 import './IrisScanAuth.css';
 
 const IrisScanAuth = ({ mode, soundEnabled }) => {
@@ -29,6 +30,9 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [confidenceScore, setConfidenceScore] = useState(0);
+  const [showConfidence, setShowConfidence] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
 
   // Initialize MediaPipe FaceMesh
@@ -242,6 +246,9 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
 
     setLoading(true);
     setMessage('📸 Capturing iris data...');
+    setShowConfidence(true);
+    setIsAnalyzing(true);
+    setConfidenceScore(0);
 
     try {
       // Get current iris embedding
@@ -250,6 +257,8 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
       if (!irisEmbedding || irisEmbedding.length !== 128) {
         setMessage('❌ Invalid iris data. Please try again.');
         if (soundEnabled) audioFeedback.playError();
+        setIsAnalyzing(false);
+        setConfidenceScore(0);
         setLoading(false);
         return;
       }
@@ -259,21 +268,56 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
       // Call appropriate API based on mode
       if (mode === 'register') {
         setMessage('📝 Registering user...');
+        
+        // Simulate analysis delay for registration
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const response = await registerUser(username, irisEmbedding);
         setMessage(`✅ ${response.message}`);
+        
+        // Registration shows 100% confidence
+        setIsAnalyzing(false);
+        setConfidenceScore(100);
+        
         if (soundEnabled) audioFeedback.playSuccess();
         setUsername('');
+        
+        // Hide confidence after 5 seconds
+        setTimeout(() => setShowConfidence(false), 5000);
       } else {
         setMessage('🔐 Authenticating...');
+        
+        // Show analyzing animation
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const response = await loginUser(username, irisEmbedding);
-        setMessage(`✅ ${response.message} (Similarity: ${response.similarity}%)`);
-        if (soundEnabled) audioFeedback.playSuccess();
+        
+        // Extract similarity percentage
+        const similarity = parseFloat(response.similarity) || 0;
+        
+        setIsAnalyzing(false);
+        setConfidenceScore(similarity);
+        
+        if (similarity >= 80) {
+          setMessage(`✅ ${response.message} (${similarity}% match)`);
+          if (soundEnabled) audioFeedback.playSuccess();
+        } else {
+          setMessage(`❌ Authentication failed (${similarity}% match - needs 80%+)`);
+          if (soundEnabled) audioFeedback.playError();
+        }
+        
         setUsername('');
+        
+        // Hide confidence after 8 seconds
+        setTimeout(() => setShowConfidence(false), 8000);
       }
     } catch (error) {
       console.error('❌ Capture error:', error);
       setMessage(`❌ Error: ${error.message}`);
       if (soundEnabled) audioFeedback.playError();
+      setIsAnalyzing(false);
+      setConfidenceScore(0);
+      setTimeout(() => setShowConfidence(false), 3000);
     } finally {
       setLoading(false);
     }
@@ -377,6 +421,13 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
           <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
             {message}
           </div>
+        )}
+
+        {showConfidence && (
+          <ConfidenceScore 
+            score={confidenceScore} 
+            isAnimating={isAnalyzing}
+          />
         )}
 
         <div className="instructions">

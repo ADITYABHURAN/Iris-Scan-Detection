@@ -21,7 +21,13 @@ const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 // Middleware
-app.use(cors()); // Enable CORS for frontend requests
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://iris-scan-auth.netlify.app', 'https://*.netlify.app']
+    : ['http://localhost:3000', 'http://localhost:5000'],
+  credentials: true
+};
+app.use(cors(corsOptions)); // Enable CORS for frontend requests
 app.use(express.json({ limit: '10mb' })); // Parse JSON bodies with larger limit for embeddings
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
