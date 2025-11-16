@@ -35,50 +35,6 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
 
-  // Initialize MediaPipe FaceMesh
-  useEffect(() => {
-    const loadFaceMesh = async () => {
-      try {
-        setStatus('⏳ Loading AI model... Please wait (10-15 seconds)');
-        console.log('🔧 Initializing MediaPipe FaceMesh...');
-        
-        const faceMesh = new FaceMesh({
-          locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
-          }
-        });
-
-        faceMesh.setOptions({
-          maxNumFaces: 1,
-          refineLandmarks: true,
-          minDetectionConfidence: 0.5,
-          minTrackingConfidence: 0.5
-        });
-
-        faceMesh.onResults((results) => {
-          lastDetectionRef.current = results;
-          drawResults(results);
-        });
-
-        console.log('✅ FaceMesh initialized successfully!');
-        faceMeshRef.current = faceMesh;
-        setModelLoaded(true);
-        setStatus('✅ Model ready! Click "Start Detection" to begin.');
-      } catch (error) {
-        console.error('❌ Error loading FaceMesh:', error);
-        setStatus(`❌ Error: ${error.message}`);
-      }
-    };
-
-    loadFaceMesh();
-
-    return () => {
-      if (cameraRef.current) {
-        cameraRef.current.stop();
-      }
-    };
-  }, [drawResults]);
-
   // Draw detection results on canvas
   const drawResults = useCallback((results) => {
     const canvas = canvasRef.current;
@@ -150,6 +106,50 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
       setStatus('👤 No face detected. Move closer and look at camera.');
     }
   }, []);
+
+  // Initialize MediaPipe FaceMesh
+  useEffect(() => {
+    const loadFaceMesh = async () => {
+      try {
+        setStatus('⏳ Loading AI model... Please wait (10-15 seconds)');
+        console.log('🔧 Initializing MediaPipe FaceMesh...');
+        
+        const faceMesh = new FaceMesh({
+          locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+          }
+        });
+
+        faceMesh.setOptions({
+          maxNumFaces: 1,
+          refineLandmarks: true,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5
+        });
+
+        faceMesh.onResults((results) => {
+          lastDetectionRef.current = results;
+          drawResults(results);
+        });
+
+        console.log('✅ FaceMesh initialized successfully!');
+        faceMeshRef.current = faceMesh;
+        setModelLoaded(true);
+        setStatus('✅ Model ready! Click "Start Detection" to begin.');
+      } catch (error) {
+        console.error('❌ Error loading FaceMesh:', error);
+        setStatus(`❌ Error: ${error.message}`);
+      }
+    };
+
+    loadFaceMesh();
+
+    return () => {
+      if (cameraRef.current) {
+        cameraRef.current.stop();
+      }
+    };
+  }, [drawResults]);
 
   // Get current iris embedding from last detection
   const getCurrentIrisEmbedding = useCallback(() => {
