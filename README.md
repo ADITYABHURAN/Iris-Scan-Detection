@@ -2,6 +2,10 @@
 
 A biometric authentication system using iris recognition with the MERN stack. Features real-time iris detection using MediaPipe FaceMesh and TensorFlow.js.
 
+## 🚀 Live Demo
+
+**[https://iris-scan.netlify.app/](https://iris-scan.netlify.app/)**
+
 ## Features
 
 - Real-time iris detection and authentication
