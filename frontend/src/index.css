@@ -5,8 +5,67 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
+  transition: background 0.3s ease;
+}
+
+/* Light Mode (default) */
+body.light-mode {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+}
+
+body.dark-mode .iris-scan-container {
+  background: rgba(30, 30, 40, 0.95) !important;
+  color: #e0e0e0;
+}
+
+body.dark-mode .control-section h2 {
+  color: #8b9eff !important;
+}
+
+body.dark-mode .username-input {
+  background: rgba(50, 50, 60, 0.8);
+  color: white;
+  border-color: #444;
+}
+
+body.dark-mode .username-input:focus {
+  border-color: #8b9eff;
+}
+
+body.dark-mode .status-bar {
+  background: rgba(50, 50, 60, 0.8) !important;
+  color: #e0e0e0;
+}
+
+body.dark-mode .instructions {
+  background: rgba(50, 50, 60, 0.8) !important;
+  border-left-color: #8b9eff !important;
+}
+
+body.dark-mode .instructions h3 {
+  color: #8b9eff !important;
+}
+
+body.dark-mode .instructions li {
+  color: #c0c0c0 !important;
+}
+
+body.dark-mode .message.success {
+  background: rgba(40, 167, 69, 0.2);
+  color: #4ade80;
+  border-color: #4ade80;
+}
+
+body.dark-mode .message.error {
+  background: rgba(220, 53, 69, 0.2);
+  color: #f87171;
+  border-color: #f87171;
 }
 
 code {
@@ -16,4 +75,64 @@ code {
 
 * {
   box-sizing: border-box;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .control-bar {
+    top: 10px;
+    right: 10px;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .icon-button {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  .session-timer {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .App-header h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .App-header p {
+    font-size: 0.9rem !important;
+  }
+
+  .mode-selector {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .mode-selector button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .App {
+    padding: 10px;
+  }
+
+  .control-bar {
+    flex-wrap: wrap;
+    border-radius: 20px;
+  }
+
+  .session-timer {
+    width: 100%;
+    justify-content: center;
+    margin-top: 5px;
+  }
 }

@@ -215,10 +215,71 @@
 @media (max-width: 768px) {
   .iris-scan-container {
     flex-direction: column;
-    padding: 20px;
+    padding: 15px;
+    gap: 20px;
+  }
+  
+  .camera-section, .control-section {
+    min-width: 100%;
   }
   
   .control-section h2 {
     font-size: 1.5rem;
+  }
+
+  .button-group {
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .instructions ol {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .iris-scan-container {
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .control-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .username-input {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+
+  .instructions {
+    padding: 15px;
+  }
+
+  .instructions h3 {
+    font-size: 1rem;
+  }
+
+  .instructions li {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .video-wrapper {
+    border-radius: 10px;
+  }
+
+  .status-bar {
+    padding: 10px 15px;
+    font-size: 14px;
   }
 }

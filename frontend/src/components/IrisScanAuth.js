@@ -15,9 +15,10 @@ import { FaceMesh } from '@mediapipe/face_mesh';
 import { Camera } from '@mediapipe/camera_utils';
 import { registerUser, loginUser } from '../services/api';
 import { extractIrisEmbedding } from '../utils/irisProcessing';
+import audioFeedback from '../utils/audioFeedback';
 import './IrisScanAuth.css';
 
-const IrisScanAuth = ({ mode }) => {
+const IrisScanAuth = ({ mode, soundEnabled }) => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const faceMeshRef = useRef(null);
@@ -213,6 +214,7 @@ const IrisScanAuth = ({ mode }) => {
       return;
     }
     console.log('🚀 User started detection');
+    if (soundEnabled) audioFeedback.playStart();
     setIsDetecting(true);
     setMessage('');
     setStatus('🔍 Detecting... Look at the camera.');
@@ -221,6 +223,7 @@ const IrisScanAuth = ({ mode }) => {
   // Stop detection
   const handleStopDetection = () => {
     console.log('⏸️ User stopped detection');
+    if (soundEnabled) audioFeedback.playStop();
     setIsDetecting(false);
     setStatus('⏹️ Detection stopped. Click "Start Detection" to resume.');
   };
@@ -246,6 +249,7 @@ const IrisScanAuth = ({ mode }) => {
 
       if (!irisEmbedding || irisEmbedding.length !== 128) {
         setMessage('❌ Invalid iris data. Please try again.');
+        if (soundEnabled) audioFeedback.playError();
         setLoading(false);
         return;
       }
@@ -257,16 +261,19 @@ const IrisScanAuth = ({ mode }) => {
         setMessage('📝 Registering user...');
         const response = await registerUser(username, irisEmbedding);
         setMessage(`✅ ${response.message}`);
+        if (soundEnabled) audioFeedback.playSuccess();
         setUsername('');
       } else {
         setMessage('🔐 Authenticating...');
         const response = await loginUser(username, irisEmbedding);
         setMessage(`✅ ${response.message} (Similarity: ${response.similarity}%)`);
+        if (soundEnabled) audioFeedback.playSuccess();
         setUsername('');
       }
     } catch (error) {
       console.error('❌ Capture error:', error);
       setMessage(`❌ Error: ${error.message}`);
+      if (soundEnabled) audioFeedback.playError();
     } finally {
       setLoading(false);
     }
@@ -280,25 +287,29 @@ const IrisScanAuth = ({ mode }) => {
             ref={webcamRef}
             audio={false}
             videoConstraints={{
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-              facingMode: 'user'
+              width: { ideal: 1280, min: 640 },
+              height: { ideal: 720, min: 480 },
+              facingMode: 'user',
+              aspectRatio: { ideal: 1.777 }
             }}
             onUserMedia={() => {
               console.log('📹 Webcam ready!');
+              if (soundEnabled) audioFeedback.playDetection();
               if (modelLoaded) {
                 setStatus('✅ Ready! Click "Start Detection" to begin.');
               }
             }}
             onUserMediaError={(error) => {
               console.error('❌ Camera error:', error);
+              if (soundEnabled) audioFeedback.playError();
               setStatus('❌ Camera access denied. Please allow camera in browser settings.');
             }}
             className="webcam"
             style={{ 
               width: '100%', 
               height: 'auto',
-              display: 'block'
+              display: 'block',
+              maxWidth: '100%'
             }}
           />
           <canvas 
