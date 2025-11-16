@@ -1,0 +1,19 @@
+# Render.com deployment configuration
+# Place this file in the backend directory
+
+# Build command
+build:
+  - npm install
+
+# Start command
+start:
+  - npm start
+
+# Environment: Node
+environment: node
+
+# Health check path
+healthCheckPath: /api/health
+
+# Auto-deploy on push
+autoDeploy: true

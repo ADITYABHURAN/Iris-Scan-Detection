@@ -1,0 +1,2 @@
+# Procfile for Heroku deployment (alternative)
+web: node server.js
