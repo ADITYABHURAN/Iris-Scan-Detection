@@ -24,6 +24,7 @@ const app = express();
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [
+        'https://iris-scan.netlify.app',
         'https://iris-scan-auth.netlify.app',
         /\.netlify\.app$/
       ]
