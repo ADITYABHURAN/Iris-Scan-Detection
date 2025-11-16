@@ -77,7 +77,7 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
         cameraRef.current.stop();
       }
     };
-  }, []);
+  }, [drawResults]);
 
   // Draw detection results on canvas
   const drawResults = useCallback((results) => {

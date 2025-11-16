@@ -79,4 +79,5 @@ class AudioFeedback {
   }
 }
 
-export default new AudioFeedback();
+const audioFeedbackInstance = new AudioFeedback();
+export default audioFeedbackInstance;
