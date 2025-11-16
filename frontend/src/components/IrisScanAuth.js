@@ -330,6 +330,7 @@ const IrisScanAuth = ({ mode, soundEnabled }) => {
           <Webcam
             ref={webcamRef}
             audio={false}
+            mirrored={false}
             videoConstraints={{
               width: { ideal: 1280, min: 640 },
               height: { ideal: 720, min: 480 },
