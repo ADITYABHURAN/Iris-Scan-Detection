@@ -8,6 +8,7 @@ A biometric authentication system using iris recognition with the MERN stack. Fe
 
 ## Features
 
+
 - Real-time iris detection and authentication
 - 128-dimensional iris embedding vectors
 - Cosine similarity matching for user verification
