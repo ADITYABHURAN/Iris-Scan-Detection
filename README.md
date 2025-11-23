@@ -143,4 +143,4 @@ Deploy via dashboard and set environment variables
 
 ## License
 
-MIT
+by MIT
