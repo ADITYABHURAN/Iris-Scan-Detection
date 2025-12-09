@@ -125,7 +125,8 @@ exports.login = async (req, res) => {
 
     // Threshold for authentication (adjust based on testing)
     // Typical values: 0.85-0.95 for strict matching
-    const SIMILARITY_THRESHOLD = 0.80; // 80% similarity required
+    // Set to 0.95 for biometric security - different faces should NOT authenticate
+    const SIMILARITY_THRESHOLD = 0.95; // 95% similarity required
 
     if (similarity >= SIMILARITY_THRESHOLD) {
       // Authentication successful
